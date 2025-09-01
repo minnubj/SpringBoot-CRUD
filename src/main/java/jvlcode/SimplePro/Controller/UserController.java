@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +55,14 @@ public class UserController {
 		return userRepository.findById(id).orElseThrow(() -> 
 		new ResourceNotFountException("User not found with this ID:"+id));
 	}
-
+	
+	//to handle certain method
+	@ExceptionHandler(ResourceNotFountException.class)
+	public ResponseEntity<String>handle(ResourceNotFountException resourceNotFound){
+		return new ResponseEntity<>(resourceNotFound.getMessage(),HttpStatus.NOT_FOUND) ;
+		
+	}
+	
 	//update user
 	
 	@PutMapping("/{id}")
@@ -75,5 +84,6 @@ public class UserController {
 		userRepository.delete(userData);
 		return ResponseEntity.ok().build();
 	}
+	
 	
 }
